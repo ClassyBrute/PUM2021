@@ -13,7 +13,6 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
 
     private TextView showResult;
-    private int result;
     private String[] operator = new String[1];
 
     @Override
@@ -24,13 +23,26 @@ public class MainActivity extends AppCompatActivity {
         showResult = findViewById(R.id.show_result);
         operator[0] = "0";
 
-        if (savedInstanceState != null)
-            result = savedInstanceState.getInt("counter_state");
-
-        if (showResult != null)
-            showResult.setText(Integer.toString(result));
+//      zmienne które mają zostać zapisane po obróceniu ekranu
+        if (savedInstanceState != null) {
+            operator[0] = savedInstanceState.getString("operator");
+            String showResult_string = savedInstanceState.getString("show_result");
+            showResult.setText(showResult_string);
+        }
 
         showResult.setText("");
+    }
+
+//  przywraca zmienne, które zostaną ustracone po obróceniu urządzenia
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState){
+        super.onRestoreInstanceState(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            operator[0] = savedInstanceState.getString("operator");
+            String showResult_string = savedInstanceState.getString("show_result");
+            showResult.setText(showResult_string);
+        }
     }
 
 //  sczytuje liczbę z przycisku, dopisuje do wyniku i wyświetla
@@ -66,11 +78,17 @@ public class MainActivity extends AppCompatActivity {
         String result = showResult.getText().toString();
         float wynik;
 
+//      gdy pierwszy wciśnięty zostanie znak równości
+        if (result.equals("")){
+            return;
+        }
+
 //      w wypadku gdy użytkownik nie poda drugiego argumentu operacji
         if (String.valueOf(result.charAt(result.length() - 1)).equals(operator[0])){
             return;
         }
 
+//      obsługa poszczególnych operatorów
         if (operator[0].equals("+")) {
             String[] separated = result.split("\\+");
 
@@ -159,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putInt("counter_state", result);
+        outState.putString("show_result", showResult.getText().toString());
+        outState.putString("operator", operator[0]);
     }
 }
