@@ -13,6 +13,7 @@
         android:id="@+id/question_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="30sp"
         android:text="Hello World!" />
 
     <LinearLayout
@@ -22,14 +23,14 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/buttonTrue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="answerTrue"
             android:text="TRUE" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/buttonFalse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="answerFalse"
@@ -43,19 +44,27 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/buttonPrev"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="prevQuestion"
             android:text="PREVIOUS" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/buttonNext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingHorizontal="34dp"
             android:onClick="nextQuestion"
             android:text="NEXT" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonRestart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:onClick="restart"
+        android:text="RESTART" />
 
 </LinearLayout>
