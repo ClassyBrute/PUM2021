@@ -3,12 +3,11 @@ package com.example.physicsquiz;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,14 +17,19 @@ public class MainActivity extends AppCompatActivity {
     private Button buttonNext;
     private Button buttonPrev;
     private Button buttonRestart;
+    private Button buttonCheat;
     private int questionCount = 0;
     private int answeredCount = 0;
     private int points = 0;
+
+    public static final String CHEAT_QUESTION = "com.example.physicsquiz.CHEATQ";
+    public static final String CHEAT_ANSWER = "com.example.physicsquiz.CHEATA";
 
     private final Question[] questions = new Question[]{
             new Question(R.string.question1, true, false),
             new Question(R.string.question2, true, false),
             new Question(R.string.question3, false, false),
+            new Question(R.string.question4, false, false),
     };
 
     @Override
@@ -39,15 +43,15 @@ public class MainActivity extends AppCompatActivity {
         buttonNext = findViewById(R.id.buttonNext);
         buttonPrev = findViewById(R.id.buttonPrev);
         buttonRestart = findViewById(R.id.buttonRestart);
+        buttonCheat = findViewById(R.id.buttonCheat);
 
         textView.setText(questions[questionCount].getTextId());
-
     }
 
 //  przywracanie stanu widoczności przycisków oraz wartości zmiennych
 //  zapamiętywanie czy pytanie zostało już odpowiedziane niezależnie od ilości pytań
     @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState){
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
         if (savedInstanceState != null) {
@@ -94,8 +98,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void answerTrue(View view) {
 //      jeżeli jeszcze nie udzielono odpowiedzi na pytanie
-        if (!questions[questionCount].isAnswered()){
-            if (questions[questionCount].isAnswer()){
+        if (!questions[questionCount].isAnswered()) {
+            if (questions[questionCount].isAnswer()) {
                 points++;
             }
             questions[questionCount].setAnswered(true);
@@ -110,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void answerFalse(View view) {
-        if (!questions[questionCount].isAnswered()){
+        if (!questions[questionCount].isAnswered()) {
             if (!questions[questionCount].isAnswer()) {
                 points++;
             }
@@ -126,8 +130,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void prevQuestion(View view) {
         questionCount--;
-        if (questionCount < 0){
-            questionCount = questions.length-1;
+        if (questionCount < 0) {
+            questionCount = questions.length - 1;
         }
 
         textView.setText(questions[questionCount].getTextId());
@@ -136,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void nextQuestion(View view) {
         questionCount++;
-        if (questionCount >= questions.length){
+        if (questionCount >= questions.length) {
             questionCount = 0;
         }
 
@@ -144,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         showhideButton(view);
     }
 
-    public void restart(View view){
+    public void restart(View view) {
         points = 0;
         answeredCount = 0;
         questionCount = 0;
@@ -153,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
         buttonFalse.setVisibility(View.VISIBLE);
         buttonNext.setVisibility(View.VISIBLE);
         buttonPrev.setVisibility(View.VISIBLE);
+        buttonCheat.setVisibility(View.VISIBLE);
         buttonRestart.setVisibility(View.INVISIBLE);
 
         for (int i = 0; i < questions.length; i++) {
@@ -160,28 +165,38 @@ public class MainActivity extends AppCompatActivity {
         }
 
         textView.setText(questions[questionCount].getTextId());
-
     }
 
-    public void finalStats(View view){
+    public void cheat(View view) {
+        String cheatQuestion = textView.getText().toString();
+        String cheatAnswer = String.valueOf(questions[questionCount].isAnswer());
+
+        Intent intent = new Intent(this, Cheat.class);
+        intent.putExtra(CHEAT_QUESTION, cheatQuestion);
+        intent.putExtra(CHEAT_ANSWER, cheatAnswer);
+
+        startActivity(intent);
+    }
+
+    public void finalStats(View view) {
         buttonTrue.setVisibility(View.INVISIBLE);
         buttonFalse.setVisibility(View.INVISIBLE);
         buttonNext.setVisibility(View.INVISIBLE);
         buttonPrev.setVisibility(View.INVISIBLE);
+        buttonCheat.setVisibility(View.INVISIBLE);
         buttonRestart.setVisibility(View.VISIBLE);
 
         textView.setText(String.format("You scored %s points \nGood answers: %s " +
                 "\nBad answers: %s", points, points, questions.length - points));
     }
 
-    public void showhideButton(View view){
+    public void showhideButton(View view) {
 //      ukrywa przyciski przy pytaniach ktore zostaly odpowiedziane
 //      pokazuje przyciski przy pytaniach ktore nie zostaly odpowiedziane
-        if (questions[questionCount].isAnswered()){
+        if (questions[questionCount].isAnswered()) {
             buttonTrue.setVisibility(View.INVISIBLE);
             buttonFalse.setVisibility(View.INVISIBLE);
-        }
-        else{
+        } else {
             buttonTrue.setVisibility(View.VISIBLE);
             buttonFalse.setVisibility(View.VISIBLE);
         }

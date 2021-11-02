@@ -14,6 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="30sp"
+        android:textColor="@color/black"
         android:text="Hello World!" />
 
     <LinearLayout
@@ -26,15 +27,19 @@
             android:id="@+id/buttonTrue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:backgroundTint="@color/green"
             android:onClick="answerTrue"
-            android:text="TRUE" />
+            android:text="@string/trueString" />
 
         <Button
             android:id="@+id/buttonFalse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:backgroundTint="@color/red"
             android:onClick="answerFalse"
-            android:text="FALSE" />
+            android:text="@string/falseString" />
     </LinearLayout>
 
     <LinearLayout
@@ -47,16 +52,18 @@
             android:id="@+id/buttonPrev"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
             android:onClick="prevQuestion"
-            android:text="PREVIOUS" />
+            android:text="@string/previous" />
 
         <Button
             android:id="@+id/buttonNext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
             android:paddingHorizontal="34dp"
             android:onClick="nextQuestion"
-            android:text="NEXT" />
+            android:text="@string/next" />
     </LinearLayout>
 
     <Button
@@ -65,6 +72,13 @@
         android:layout_height="wrap_content"
         android:visibility="invisible"
         android:onClick="restart"
-        android:text="RESTART" />
+        android:text="@string/restart" />
+
+    <Button
+        android:id="@+id/buttonCheat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="cheat"
+        android:text="@string/cheat" />
 
 </LinearLayout>

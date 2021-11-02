@@ -10,6 +10,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PhysicsQuiz">
         <activity
+            android:name=".Cheat"
+            android:parentActivityName=".MainActivity"
+            android:label="Cheat Activity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
