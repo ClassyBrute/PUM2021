@@ -20,7 +20,9 @@ public class MainActivity extends AppCompatActivity {
     private Button buttonCheat;
     private int questionCount = 0;
     private int answeredCount = 0;
-    private int points = 0;
+    private float points = 0;
+    private int goodAnswers = 0;
+    private int cheatedCount = 0;
 
     public static final String CHEAT_QUESTION = "com.example.physicsquiz.CHEATQ";
     public static final String CHEAT_ANSWER = "com.example.physicsquiz.CHEATA";
@@ -61,12 +63,16 @@ public class MainActivity extends AppCompatActivity {
             buttonNext.setVisibility(savedInstanceState.getInt("buttonNext"));
             buttonPrev.setVisibility(savedInstanceState.getInt("buttonPrev"));
             buttonRestart.setVisibility(savedInstanceState.getInt("buttonRestart"));
+            buttonCheat.setVisibility(savedInstanceState.getInt("buttonCheatV"));
 
+            buttonCheat.setText(savedInstanceState.getString("buttonCheat"));
             textView.setText(savedInstanceState.getString("textView"));
 
             questionCount = savedInstanceState.getInt("questionCount");
             answeredCount = savedInstanceState.getInt("answeredCount");
-            points = savedInstanceState.getInt("points");
+            points = savedInstanceState.getFloat("points");
+            goodAnswers = savedInstanceState.getInt("goodAnswers");
+            cheatedCount = savedInstanceState.getInt("cheatedCount");
 
             for (int i = 0; i < questions.length; i++) {
                 boolean question = savedInstanceState.getBoolean(String.format("question%s", i));
@@ -84,12 +90,16 @@ public class MainActivity extends AppCompatActivity {
         outState.putInt("buttonNext", buttonNext.getVisibility());
         outState.putInt("buttonPrev", buttonPrev.getVisibility());
         outState.putInt("buttonRestart", buttonRestart.getVisibility());
+        outState.putInt("buttonCheatV", buttonCheat.getVisibility());
 
+        outState.putString("buttonCheat", buttonCheat.getText().toString());
         outState.putString("textView", textView.getText().toString());
 
         outState.putInt("questionCount", questionCount);
         outState.putInt("answeredCount", answeredCount);
-        outState.putInt("points", points);
+        outState.putFloat("points", points);
+        outState.putInt("goodAnswers", goodAnswers);
+        outState.putInt("cheatedCount", cheatedCount);
 
         for (int i = 0; i < questions.length; i++) {
             outState.putBoolean(String.format("question%s", i), questions[i].isAnswered());
@@ -101,11 +111,13 @@ public class MainActivity extends AppCompatActivity {
         if (!questions[questionCount].isAnswered()) {
             if (questions[questionCount].isAnswer()) {
                 points++;
+                goodAnswers++;
             }
             questions[questionCount].setAnswered(true);
             answeredCount++;
             buttonTrue.setVisibility(View.INVISIBLE);
             buttonFalse.setVisibility(View.INVISIBLE);
+            buttonCheat.setText("ANSWER");
         }
 //      po odpowiedzeniu na ostatnie pytanie wyświetlane są statystyki
         if (answeredCount == questions.length) {
@@ -117,11 +129,13 @@ public class MainActivity extends AppCompatActivity {
         if (!questions[questionCount].isAnswered()) {
             if (!questions[questionCount].isAnswer()) {
                 points++;
+                goodAnswers++;
             }
             questions[questionCount].setAnswered(true);
             answeredCount++;
             buttonTrue.setVisibility(View.INVISIBLE);
             buttonFalse.setVisibility(View.INVISIBLE);
+            buttonCheat.setText("ANSWER");
         }
         if (answeredCount == questions.length) {
             finalStats(view);
@@ -152,6 +166,8 @@ public class MainActivity extends AppCompatActivity {
         points = 0;
         answeredCount = 0;
         questionCount = 0;
+        cheatedCount = 0;
+        goodAnswers = 0;
 
         buttonTrue.setVisibility(View.VISIBLE);
         buttonFalse.setVisibility(View.VISIBLE);
@@ -159,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
         buttonPrev.setVisibility(View.VISIBLE);
         buttonCheat.setVisibility(View.VISIBLE);
         buttonRestart.setVisibility(View.INVISIBLE);
+        buttonCheat.setText("CHEAT");
 
         for (int i = 0; i < questions.length; i++) {
             questions[i].setAnswered(false);
@@ -168,6 +185,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void cheat(View view) {
+        if (!questions[questionCount].isAnswered()){
+            cheatedCount++;
+        }
+
         String cheatQuestion = textView.getText().toString();
         String cheatAnswer = String.valueOf(questions[questionCount].isAnswer());
 
@@ -186,8 +207,15 @@ public class MainActivity extends AppCompatActivity {
         buttonCheat.setVisibility(View.INVISIBLE);
         buttonRestart.setVisibility(View.VISIBLE);
 
+        double pointsFinal = points*(1-(cheatedCount*0.15));
+
+        if (pointsFinal <= 0){
+            pointsFinal = 0;
+        }
+
         textView.setText(String.format("You scored %s points \nGood answers: %s " +
-                "\nBad answers: %s", points, points, questions.length - points));
+            "\nBad answers: %s \nCheated %s times", String.format("%.2f", pointsFinal),
+            goodAnswers, questions.length - goodAnswers, cheatedCount));
     }
 
     public void showhideButton(View view) {
@@ -196,9 +224,11 @@ public class MainActivity extends AppCompatActivity {
         if (questions[questionCount].isAnswered()) {
             buttonTrue.setVisibility(View.INVISIBLE);
             buttonFalse.setVisibility(View.INVISIBLE);
+            buttonCheat.setText("ANSWER");
         } else {
             buttonTrue.setVisibility(View.VISIBLE);
             buttonFalse.setVisibility(View.VISIBLE);
+            buttonCheat.setText("CHEAT");
         }
     }
 }
