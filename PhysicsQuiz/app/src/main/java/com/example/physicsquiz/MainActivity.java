@@ -3,8 +3,11 @@ package com.example.physicsquiz;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -18,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private Button buttonPrev;
     private Button buttonRestart;
     private Button buttonCheat;
+    private Button buttonSearch;
     private int questionCount = 0;
     private int answeredCount = 0;
     private float points = 0;
@@ -32,6 +36,10 @@ public class MainActivity extends AppCompatActivity {
             new Question(R.string.question2, true, false),
             new Question(R.string.question3, false, false),
             new Question(R.string.question4, false, false),
+            new Question(R.string.question5, false, false),
+            new Question(R.string.question6, true, false),
+            new Question(R.string.question7, true, false),
+            new Question(R.string.question8, true, false),
     };
 
     @Override
@@ -46,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         buttonPrev = findViewById(R.id.buttonPrev);
         buttonRestart = findViewById(R.id.buttonRestart);
         buttonCheat = findViewById(R.id.buttonCheat);
+        buttonSearch = findViewById(R.id.buttonSearch);
 
         textView.setText(questions[questionCount].getTextId());
     }
@@ -64,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
             buttonPrev.setVisibility(savedInstanceState.getInt("buttonPrev"));
             buttonRestart.setVisibility(savedInstanceState.getInt("buttonRestart"));
             buttonCheat.setVisibility(savedInstanceState.getInt("buttonCheatV"));
+            buttonSearch.setVisibility(savedInstanceState.getInt("buttonSearch"));
 
             buttonCheat.setText(savedInstanceState.getString("buttonCheat"));
             textView.setText(savedInstanceState.getString("textView"));
@@ -91,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         outState.putInt("buttonPrev", buttonPrev.getVisibility());
         outState.putInt("buttonRestart", buttonRestart.getVisibility());
         outState.putInt("buttonCheatV", buttonCheat.getVisibility());
+        outState.putInt("buttonSearch", buttonSearch.getVisibility());
 
         outState.putString("buttonCheat", buttonCheat.getText().toString());
         outState.putString("textView", textView.getText().toString());
@@ -174,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
         buttonNext.setVisibility(View.VISIBLE);
         buttonPrev.setVisibility(View.VISIBLE);
         buttonCheat.setVisibility(View.VISIBLE);
+        buttonSearch.setVisibility(View.VISIBLE);
         buttonRestart.setVisibility(View.INVISIBLE);
         buttonCheat.setText("CHEAT");
 
@@ -199,12 +211,27 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void search(View view){
+        String url = textView.getText().toString();
+        Uri webpage = Uri.parse(String.format("https://www.google.com/search?q=%s", url));
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+
+        try {
+            startActivity(intent);
+        }
+        catch (ActivityNotFoundException e){
+            Log.d("error", "no activity");
+        }
+    }
+
     public void finalStats(View view) {
         buttonTrue.setVisibility(View.INVISIBLE);
         buttonFalse.setVisibility(View.INVISIBLE);
         buttonNext.setVisibility(View.INVISIBLE);
         buttonPrev.setVisibility(View.INVISIBLE);
         buttonCheat.setVisibility(View.INVISIBLE);
+        buttonSearch.setVisibility(View.INVISIBLE);
         buttonRestart.setVisibility(View.VISIBLE);
 
         double pointsFinal = points*(1-(cheatedCount*0.15));

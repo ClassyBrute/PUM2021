@@ -13,6 +13,7 @@
         android:id="@+id/question_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAlignment="center"
         android:textSize="30sp"
         android:textColor="@color/black"
         android:text="Hello World!" />
@@ -80,5 +81,12 @@
         android:layout_height="wrap_content"
         android:onClick="cheat"
         android:text="@string/cheat" />
+
+    <Button
+        android:id="@+id/buttonSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="search"
+        android:text="SEARCH" />
 
 </LinearLayout>
