@@ -5,9 +5,9 @@ import java.util.UUID;
 
 public class Crime {
 
-    private UUID mId;
+    private final UUID mId = UUID.randomUUID();
     private String mTitle;
-    private Date mDate;
+    private Date mDate = new Date();
     private boolean mSolved;
 
     public void setDate(Date mDate) {
