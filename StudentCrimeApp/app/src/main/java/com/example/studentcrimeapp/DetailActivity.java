@@ -1,6 +1,10 @@
 package com.example.studentcrimeapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -17,7 +21,7 @@ import android.widget.TimePicker;
 import java.util.Calendar;
 import java.util.UUID;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends FragmentActivity {
 
     CrimeLab Crimes = CrimeLab.get(this);
 
@@ -30,10 +34,18 @@ public class DetailActivity extends AppCompatActivity {
     Crime crime;
     Calendar date;
 
+    private ViewPager2 viewPager2;
+    private FragmentStateAdapter pagerAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
+        setContentView(R.layout.view_pager2);
+
+        viewPager2 = findViewById(R.id.pager);
+        pagerAdapter = new ScreenSlidePagerAdapter(this);
+        viewPager2.setAdapter(pagerAdapter);
+
 
         textView = findViewById(R.id.textView1);
         date_time = findViewById(R.id.dateTime);
@@ -41,10 +53,7 @@ public class DetailActivity extends AppCompatActivity {
         checkbox = findViewById(R.id.checkBox);
 
         intent = getIntent();
-        // czy mozna to jakos ladniej zrobic, np nie uzywajac serializable
         crime_id = (UUID) intent.getSerializableExtra("id");
-
-        // dlaczego musze nowy obiekt Crimes tworzyc?
         crime = Crimes.getCrime(crime_id);
 
         // if crime solved, set checkbox to true
@@ -54,16 +63,42 @@ public class DetailActivity extends AppCompatActivity {
         date_time.setText(crime.getDate().toString());
     }
 
+    @Override
+    public void onBackPressed() {
+        if (viewPager2.getCurrentItem() == 0){
+            super.onBackPressed();
+        }
+        else {
+            viewPager2.setCurrentItem(viewPager2.getCurrentItem() - 1);
+        }
+    }
+
+    private class ScreenSlidePagerAdapter extends FragmentStateAdapter {
+        public ScreenSlidePagerAdapter(FragmentActivity fa) {
+            super(fa);
+        }
+
+        @Override
+        public Fragment createFragment(int position) {
+            return new ScreenSlidePageFragment();
+        }
+
+        @Override
+        public int getItemCount(){
+            return 4;
+        }
+    }
+
     public void showDateTimePicker(View view) {
         final Calendar currentDate = Calendar.getInstance();
         date = Calendar.getInstance();
-        new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+        new DatePickerDialog(DetailActivity.this, new DatePickerDialog.OnDateSetListener() {
 
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 date.set(year, monthOfYear, dayOfMonth);
                 // nie wiem co to peekAvailableContext ale zadziałało z tym
-                new TimePickerDialog(peekAvailableContext(), new TimePickerDialog.OnTimeSetListener() {
+                new TimePickerDialog(DetailActivity.this, new TimePickerDialog.OnTimeSetListener() {
 
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
