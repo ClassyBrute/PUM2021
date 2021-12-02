@@ -19,11 +19,13 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.UUID;
 
-public class DetailActivity extends FragmentActivity {
+public class DetailActivity extends AppCompatActivity {
 
     CrimeLab Crimes = CrimeLab.get(this);
+    private LinkedList<Crime> crimeList;
 
     TextView textView;
     Button date_time;
@@ -35,7 +37,8 @@ public class DetailActivity extends FragmentActivity {
     Calendar date;
 
     private ViewPager2 viewPager2;
-    private FragmentStateAdapter pagerAdapter;
+
+    int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,50 +46,23 @@ public class DetailActivity extends FragmentActivity {
         setContentView(R.layout.view_pager2);
 
         viewPager2 = findViewById(R.id.pager);
-        pagerAdapter = new ScreenSlidePagerAdapter(this);
-        viewPager2.setAdapter(pagerAdapter);
-
 
         textView = findViewById(R.id.textView1);
         date_time = findViewById(R.id.dateTime);
         editText = findViewById(R.id.editTextTitle);
         checkbox = findViewById(R.id.checkBox);
 
+        crimeList = CrimeLab.mCrimes;
+
+
         intent = getIntent();
         crime_id = (UUID) intent.getSerializableExtra("id");
+        position = intent.getIntExtra("position", 0);
         crime = Crimes.getCrime(crime_id);
 
-        // if crime solved, set checkbox to true
-        checkbox.setChecked(crime.isSolved());
-
-        editText.setText(crime.getTitle());
-        date_time.setText(crime.getDate().toString());
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (viewPager2.getCurrentItem() == 0){
-            super.onBackPressed();
-        }
-        else {
-            viewPager2.setCurrentItem(viewPager2.getCurrentItem() - 1);
-        }
-    }
-
-    private class ScreenSlidePagerAdapter extends FragmentStateAdapter {
-        public ScreenSlidePagerAdapter(FragmentActivity fa) {
-            super(fa);
-        }
-
-        @Override
-        public Fragment createFragment(int position) {
-            return new ScreenSlidePageFragment();
-        }
-
-        @Override
-        public int getItemCount(){
-            return 4;
-        }
+        ViewPagerAdapter adapter = new ViewPagerAdapter(this);
+        viewPager2.setAdapter(adapter);
+        viewPager2.setCurrentItem(position);
     }
 
     public void showDateTimePicker(View view) {
@@ -97,7 +73,6 @@ public class DetailActivity extends FragmentActivity {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 date.set(year, monthOfYear, dayOfMonth);
-                // nie wiem co to peekAvailableContext ale zadziałało z tym
                 new TimePickerDialog(DetailActivity.this, new TimePickerDialog.OnTimeSetListener() {
 
                     @Override
@@ -105,7 +80,7 @@ public class DetailActivity extends FragmentActivity {
                         date.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         date.set(Calendar.MINUTE, minute);
                         crime.setDate(date.getTime());
-                        date_time.setText(date.getTime().toString());
+//                        date_time.setText(date.getTime().toString());
                     }
                 }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), false).show();
             }
@@ -113,18 +88,36 @@ public class DetailActivity extends FragmentActivity {
     }
 
     @Override
-    protected void onPause() {
+    public void onPause(){
         super.onPause();
+//        crime = Crimes.getCrime(crime_id);
 
-        if (editText.getText().toString().equals("")){  }
-        else {
-            crime.setTitle(editText.getText().toString());
-        }
-        crime.setSolved(checkbox.isChecked());
+        Crime current = crimeList.get(viewPager2.getCurrentItem());
+        current.setTitle(editText.getText().toString());
+//        crime.setSolved(checkbox.isChecked());
+    }
+
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//
+//        if (editText.getText().toString().equals("")){  }
+//        else {
+//            crime.setTitle(editText.getText().toString());
+//        }
+//        crime.setSolved(checkbox.isChecked());
+//    }
+
+    public void first(View view){
+        viewPager2.setCurrentItem(0);
+    }
+
+    public void last(View view){
+        viewPager2.setCurrentItem(Crimes.getCrimes().size());
     }
 
     public void deleteCrime(View view){
-        Crimes.getCrimes().remove(crime);
+        Crimes.getCrimes().remove(viewPager2.getCurrentItem());
         finish();
     }
 }

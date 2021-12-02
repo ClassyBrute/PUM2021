@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public class CrimeLab {
     private static CrimeLab sCrimeLab;
-    private LinkedList<Crime> mCrimes;
+    public static LinkedList<Crime> mCrimes;
 
     public static CrimeLab get(Context context) {
         if (sCrimeLab == null) {

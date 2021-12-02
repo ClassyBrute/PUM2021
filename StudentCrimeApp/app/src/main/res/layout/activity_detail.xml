@@ -58,6 +58,35 @@
             android:layout_height="wrap_content"
             android:text="Delete crime" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/first"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginRight="5dp"
+                android:onClick="first"
+                android:text="First">
+
+            </Button>
+
+            <Button
+                android:id="@+id/last"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="5dp"
+                android:onClick="last"
+                android:text="Last">
+
+            </Button>
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </ScrollView>
