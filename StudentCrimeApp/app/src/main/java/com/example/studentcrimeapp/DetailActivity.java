@@ -1,9 +1,7 @@
 package com.example.studentcrimeapp;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.app.DatePickerDialog;
@@ -27,7 +25,6 @@ public class DetailActivity extends AppCompatActivity {
     CrimeLab Crimes = CrimeLab.get(this);
     private LinkedList<Crime> crimeList;
 
-    TextView textView;
     Button date_time;
     EditText editText;
     CheckBox checkbox;
@@ -41,19 +38,13 @@ public class DetailActivity extends AppCompatActivity {
     int position;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_pager2);
 
         viewPager2 = findViewById(R.id.pager);
 
-        textView = findViewById(R.id.textView1);
-        date_time = findViewById(R.id.dateTime);
-        editText = findViewById(R.id.editTextTitle);
-        checkbox = findViewById(R.id.checkBox);
-
         crimeList = CrimeLab.mCrimes;
-
 
         intent = getIntent();
         crime_id = (UUID) intent.getSerializableExtra("id");
@@ -66,6 +57,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     public void showDateTimePicker(View view) {
+        date_time = findViewById(R.id.dateTime);
         final Calendar currentDate = Calendar.getInstance();
         date = Calendar.getInstance();
         new DatePickerDialog(DetailActivity.this, new DatePickerDialog.OnDateSetListener() {
@@ -80,7 +72,7 @@ public class DetailActivity extends AppCompatActivity {
                         date.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         date.set(Calendar.MINUTE, minute);
                         crime.setDate(date.getTime());
-//                        date_time.setText(date.getTime().toString());
+                        date_time.setText(date.getTime().toString());
                     }
                 }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), false).show();
             }
@@ -88,25 +80,22 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onPause(){
+    protected void onPause() {
         super.onPause();
-//        crime = Crimes.getCrime(crime_id);
 
-        Crime current = crimeList.get(viewPager2.getCurrentItem());
-        current.setTitle(editText.getText().toString());
-//        crime.setSolved(checkbox.isChecked());
+        editText = findViewById(R.id.editTextTitle);
+        checkbox = findViewById(R.id.checkBox);
+
+        int curr_position = viewPager2.getCurrentItem();
+
+        crime = crimeList.get(curr_position);
+
+        crime.setTitle(editText.getText().toString());
+        crime.setSolved(checkbox.isChecked());
+
     }
 
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//
-//        if (editText.getText().toString().equals("")){  }
-//        else {
-//            crime.setTitle(editText.getText().toString());
-//        }
-//        crime.setSolved(checkbox.isChecked());
-//    }
+//    protected void onchange view
 
     public void first(View view){
         viewPager2.setCurrentItem(0);
