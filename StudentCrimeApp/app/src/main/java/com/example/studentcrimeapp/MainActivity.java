@@ -17,7 +17,6 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private CrimeAdapter crimeAdapter;
-
     private FloatingActionButton addCrime;
 
     @Override
@@ -37,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         crimeAdapter.notifyDataSetChanged();
     }
 
@@ -48,6 +46,3 @@ public class MainActivity extends AppCompatActivity {
         crimeAdapter.notifyDataSetChanged();
     }
 }
-
-
-

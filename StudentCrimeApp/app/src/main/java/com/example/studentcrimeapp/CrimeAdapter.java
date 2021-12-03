@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import java.util.LinkedList;
 
@@ -47,6 +48,7 @@ public class CrimeAdapter extends RecyclerView.Adapter<CrimeAdapter.CrimeViewHol
             Intent intent = new Intent(inflater.getContext(), DetailActivity.class);
 
             intent.putExtra("id", element.getId());
+            intent.putExtra("position", position);
 
             inflater.getContext().startActivity(intent);
         }
