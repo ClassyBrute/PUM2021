@@ -1,7 +1,6 @@
 package com.example.studentcrimeapp;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.app.DatePickerDialog;
@@ -13,7 +12,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.TimePicker;
 
 import java.util.Calendar;
@@ -34,7 +32,6 @@ public class DetailActivity extends AppCompatActivity {
     Calendar date;
 
     private ViewPager2 viewPager2;
-
     int position;
 
     @Override
@@ -43,7 +40,6 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.view_pager2);
 
         viewPager2 = findViewById(R.id.pager);
-
         crimeList = CrimeLab.mCrimes;
 
         intent = getIntent();
@@ -54,6 +50,32 @@ public class DetailActivity extends AppCompatActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(this);
         viewPager2.setAdapter(adapter);
         viewPager2.setCurrentItem(position);
+
+
+        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback(){
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+
+                crime = crimeList.get(position);
+
+                editText = findViewById(R.id.editTextTitle);
+                checkbox = findViewById(R.id.checkBox);
+
+                crime.setTitle(editText.getText().toString());
+                crime.setSolved(checkbox.isChecked());
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                super.onPageScrollStateChanged(state);
+            }
+        });
     }
 
     public void showDateTimePicker(View view) {
@@ -86,23 +108,16 @@ public class DetailActivity extends AppCompatActivity {
         editText = findViewById(R.id.editTextTitle);
         checkbox = findViewById(R.id.checkBox);
 
-        int curr_position = viewPager2.getCurrentItem();
-
-        crime = crimeList.get(curr_position);
-
         crime.setTitle(editText.getText().toString());
         crime.setSolved(checkbox.isChecked());
-
     }
-
-//    protected void onchange view
 
     public void first(View view){
         viewPager2.setCurrentItem(0);
     }
 
     public void last(View view){
-        viewPager2.setCurrentItem(Crimes.getCrimes().size());
+        viewPager2.setCurrentItem(crimeList.size());
     }
 
     public void deleteCrime(View view){

@@ -3,7 +3,6 @@ package com.example.studentcrimeapp;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
 import android.view.View;
@@ -18,7 +17,6 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private CrimeAdapter crimeAdapter;
-
     private FloatingActionButton addCrime;
 
     @Override
@@ -48,6 +46,3 @@ public class MainActivity extends AppCompatActivity {
         crimeAdapter.notifyDataSetChanged();
     }
 }
-
-
-
