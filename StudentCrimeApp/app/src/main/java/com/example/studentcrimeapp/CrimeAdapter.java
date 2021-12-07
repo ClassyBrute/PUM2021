@@ -10,17 +10,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class CrimeAdapter extends RecyclerView.Adapter<CrimeAdapter.CrimeViewHolder> {
 
-    private final LinkedList<Crime> crimeList;
+    private final ArrayList<Crime> crimeList;
     private LayoutInflater inflater;
+    private Context context;
 
     // constructor
-    public CrimeAdapter(Context context, LinkedList<Crime> crimeList) {
+    public CrimeAdapter(Context context, ArrayList<Crime> crimeList) {
         inflater = LayoutInflater.from(context);
         this.crimeList = crimeList;
+        this.context = context;
     }
 
     class CrimeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -46,7 +49,7 @@ public class CrimeAdapter extends RecyclerView.Adapter<CrimeAdapter.CrimeViewHol
 
             Intent intent = new Intent(inflater.getContext(), DetailActivity.class);
 
-            intent.putExtra("id", element.getId());
+            intent.putExtra("index", element.getIndex());
             intent.putExtra("position", position);
 
             inflater.getContext().startActivity(intent);
@@ -56,6 +59,10 @@ public class CrimeAdapter extends RecyclerView.Adapter<CrimeAdapter.CrimeViewHol
     @NonNull
     @Override
     public CrimeAdapter.CrimeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+//        return new CrimeViewHolder(LayoutInflater.from(MainActivity.this)
+//        .inflate(R.layout.crime_list, parent, false));
+
+
         View itemView = inflater.inflate(R.layout.crime_list , parent, false);
         return new CrimeViewHolder(itemView, this);
     }

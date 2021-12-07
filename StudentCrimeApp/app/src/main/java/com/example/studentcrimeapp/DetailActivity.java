@@ -7,16 +7,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.UUID;
 
 public class DetailActivity extends AppCompatActivity {
 
-    CrimeLab Crimes = CrimeLab.get(this);
-    private LinkedList<Crime> crimeList;
+//    CrimeLab Crimes = CrimeLab.get(this);
+    private ArrayList<Crime> crimeList;
 
     Intent intent;
-    UUID crime_id;
+    int crime_index;
     Crime crime;
 
     private ViewPager2 viewPager2;
@@ -28,12 +29,13 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.view_pager2);
 
         viewPager2 = findViewById(R.id.pager);
-        crimeList = CrimeLab.mCrimes;
+//        crimeList = CrimeLab.mCrimes;
 
         intent = getIntent();
-        crime_id = (UUID) intent.getSerializableExtra("id");
+        crime_index = intent.getIntExtra("index", 0);
         position = intent.getIntExtra("position", 0);
-        crime = Crimes.getCrime(crime_id);
+//        crime = Crimes.getCrime(crime_id);
+        crime = crimeList.get(position);
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(this);
         viewPager2.setAdapter(adapter);
@@ -45,11 +47,11 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     public void last(View view){
-        viewPager2.setCurrentItem(crimeList.size());
+        viewPager2.setCurrentItem(crimeList.size()-1);
     }
 
-    public void deleteCrime(View view){
-        Crimes.getCrimes().remove(viewPager2.getCurrentItem());
-        finish();
-    }
+//    public void deleteCrime(View view){
+//        Crimes.getCrimes().remove(viewPager2.getCurrentItem());
+//        finish();
+//    }
 }
