@@ -20,13 +20,14 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 
 
 public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.PagerViewHolder> {
 
-    private LinkedList<Crime> crimeList;
+    private ArrayList<Crime> crimeList;
     private Context context;
     private LayoutInflater inflater;
 

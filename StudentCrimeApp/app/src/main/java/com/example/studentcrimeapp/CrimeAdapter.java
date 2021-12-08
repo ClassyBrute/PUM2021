@@ -1,85 +1,105 @@
-package com.example.studentcrimeapp;
-
-import android.content.Context;
-import android.content.Intent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-
-public class CrimeAdapter extends RecyclerView.Adapter<CrimeAdapter.CrimeViewHolder> {
-
-    private final ArrayList<Crime> crimeList;
-    private LayoutInflater inflater;
-    private Context context;
-
-    // constructor
-    public CrimeAdapter(Context context, ArrayList<Crime> crimeList) {
-        inflater = LayoutInflater.from(context);
-        this.crimeList = crimeList;
-        this.context = context;
-    }
-
-    class CrimeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        public TextView crimeText;
-        public TextView crimeDate;
-        public TextView crimeSolved;
-        final CrimeAdapter adapter;
-
-        public CrimeViewHolder(@NonNull View itemView, CrimeAdapter adapter) {
-            super(itemView);
-            crimeText = itemView.findViewById(R.id.crime_text);
-            crimeDate = itemView.findViewById(R.id.crime_date);
-            crimeSolved = itemView.findViewById(R.id.crime_solved);
-            this.adapter = adapter;
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View view) {
-            int position = getLayoutPosition();
-            Crime element = crimeList.get(position);
-
-            Intent intent = new Intent(inflater.getContext(), DetailActivity.class);
-
-            intent.putExtra("index", element.getIndex());
-            intent.putExtra("position", position);
-
-            inflater.getContext().startActivity(intent);
-        }
-    }
-
-    @NonNull
-    @Override
-    public CrimeAdapter.CrimeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//        return new CrimeViewHolder(LayoutInflater.from(MainActivity.this)
-//        .inflate(R.layout.crime_list, parent, false));
-
-
-        View itemView = inflater.inflate(R.layout.crime_list , parent, false);
-        return new CrimeViewHolder(itemView, this);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull CrimeAdapter.CrimeViewHolder holder, int position) {
-        Crime current = crimeList.get(position);
-        holder.crimeText.setText(current.getTitle());
-        holder.crimeDate.setText(current.getDate().toString());
-        if (current.isSolved()){
-            holder.crimeSolved.setText("Crime is solved");
-        }
-        else holder.crimeSolved.setText("Crime is not solved");
-    }
-
-    @Override
-    public int getItemCount() {
-        return crimeList.size();
-    }
-}
+//package com.example.studentcrimeapp;
+//
+//import android.content.Context;
+//import android.content.Intent;
+//import android.view.LayoutInflater;
+//import android.view.View;
+//import android.view.ViewGroup;
+//import android.widget.ImageButton;
+//import android.widget.TextView;
+//
+//import androidx.annotation.NonNull;
+//import androidx.recyclerview.widget.RecyclerView;
+//
+//import java.util.ArrayList;
+//import java.util.LinkedList;
+//
+//public class CrimeAdapter extends RecyclerView.Adapter<CrimeAdapter.CrimeViewHolder> {
+//
+//    private final ArrayList<Crime> crimeList;
+//    private LayoutInflater inflater;
+//    private Context context;
+//
+//    // constructor
+//    public CrimeAdapter(Context context, ArrayList<Crime> crimeList) {
+//        inflater = LayoutInflater.from(context);
+//        this.crimeList = crimeList;
+//        this.context = context;
+//    }
+//
+//    class CrimeViewHolder extends RecyclerView.ViewHolder {
+//        public TextView crimeText;
+//        public TextView crimeDate;
+//        public TextView crimeSolved;
+//        public ImageButton deleteCrime;
+//        final CrimeAdapter adapter;
+//
+//        public CrimeViewHolder(@NonNull View itemView, CrimeAdapter adapter) {
+//            super(itemView);
+//            crimeText = itemView.findViewById(R.id.crime_text);
+//            crimeDate = itemView.findViewById(R.id.crime_date);
+//            crimeSolved = itemView.findViewById(R.id.crime_solved);
+//            deleteCrime = itemView.findViewById(R.id.delete);
+//            this.adapter = adapter;
+//
+////            itemView.setOnClickListener(this);
+//
+////            deleteCrime.setOnClickListener(v -> {
+////                System.out.println("dupa");
+////                dbHandler.getCrimes();
+////                notifyDataSetChanged();
+////
+////            });
+//        }
+//
+////        @Override
+////        public void onClick(View view) {
+////            int position = getLayoutPosition();
+//////            Crime element = crimeList.get(position);
+////
+////            notifyDataSetChanged();
+////
+//////            Intent intent = new Intent(inflater.getContext(), DetailActivity.class);
+////
+//////            intent.putExtra("index", element.getIndex());
+//////            intent.putExtra("position", position);
+////
+//////            inflater.getContext().startActivity(intent);
+////        }
+//    }
+//
+//    @NonNull
+//    @Override
+//    public CrimeAdapter.CrimeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+////        return new CrimeViewHolder(LayoutInflater.from(MainActivity.this)
+////        .inflate(R.layout.crime_list, parent, false));
+//
+//
+//        View itemView = inflater.inflate(R.layout.crime_list , parent, false);
+//        return new CrimeViewHolder(itemView, this);
+//    }
+//
+//    @Override
+//    public void onBindViewHolder(@NonNull CrimeAdapter.CrimeViewHolder holder, int position) {
+//        Crime current = crimeList.get(position);
+//        holder.crimeText.setText(current.getTitle());
+//        holder.crimeDate.setText(current.getDate().toString());
+//        if (current.isSolved()){
+//            holder.crimeSolved.setText("Crime is solved");
+//        }
+//        else holder.crimeSolved.setText("Crime is not solved");
+//
+//        holder.deleteCrime.setOnClickListener(v -> {
+//            dbHandler.deleteCrime(current.getTitle());
+//            dbHandler.getCrimes();
+//
+////            notifyDataSetChanged();
+//
+//        });
+//    }
+//
+//    @Override
+//    public int getItemCount() {
+//        return crimeList.size();
+//    }
+//}
