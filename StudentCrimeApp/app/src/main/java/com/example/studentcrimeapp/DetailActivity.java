@@ -1,55 +1,93 @@
 package com.example.studentcrimeapp;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager2.widget.ViewPager2;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.TextView;
 
-import java.util.LinkedList;
-import java.util.UUID;
+import java.util.Calendar;
 
 public class DetailActivity extends AppCompatActivity {
 
-    CrimeLab Crimes = CrimeLab.get(this);
-    private LinkedList<Crime> crimeList;
-
     Intent intent;
-    UUID crime_id;
-    Crime crime;
+    DBHandler dbHandler;
 
-    private ViewPager2 viewPager2;
+    int crime_id;
     int position;
+    String title;
+    boolean solved;
+    String date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.view_pager2);
+        setContentView(R.layout.activity_detail);
 
-        viewPager2 = findViewById(R.id.pager);
-        crimeList = CrimeLab.mCrimes;
+        TextView crimeText = findViewById(R.id.editTextTitle);
+        CheckBox crimeSolved = findViewById(R.id.checkBox);
+        Button dateTime = findViewById(R.id.dateTime);
+        Button deleteCrime = findViewById(R.id.delete);
+
+        dbHandler = new DBHandler(this);
 
         intent = getIntent();
-        crime_id = (UUID) intent.getSerializableExtra("id");
+        crime_id = intent.getIntExtra("id", 0);
         position = intent.getIntExtra("position", 0);
-        crime = Crimes.getCrime(crime_id);
+        title = intent.getStringExtra("title");
+        solved = intent.getBooleanExtra("solved", false);
+        date = intent.getStringExtra("date");
 
-        ViewPagerAdapter adapter = new ViewPagerAdapter(this);
-        viewPager2.setAdapter(adapter);
-        viewPager2.setCurrentItem(position);
-    }
+        crimeText.setText(title);
+        crimeSolved.setChecked(solved);
+        dateTime.setText(date);
 
-    public void first(View view){
-        viewPager2.setCurrentItem(0);
-    }
+        crimeText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
-    public void last(View view){
-        viewPager2.setCurrentItem(crimeList.size());
-    }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                dbHandler.updateCrime(crime_id, s.toString(), null, solved ? 1 : 0);
+            }
 
-    public void deleteCrime(View view){
-        Crimes.getCrimes().remove(viewPager2.getCurrentItem());
-        finish();
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        crimeSolved.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            solved = crimeSolved.isChecked();
+            dbHandler.updateCrime(crime_id, title, null, solved ? 1 : 0);
+        });
+
+        dateTime.setOnClickListener(v -> {
+            final Calendar currentDate = Calendar.getInstance();
+            Calendar date_c = Calendar.getInstance();
+            new DatePickerDialog(DetailActivity.this, (view, year, monthOfYear, dayOfMonth) -> {
+                date_c.set(year, monthOfYear, dayOfMonth);
+                new TimePickerDialog(DetailActivity.this, (view1, hourOfDay, minute) -> {
+                    date_c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                    date_c.set(Calendar.MINUTE, minute);
+                    dateTime.setText(date_c.getTime().toString());
+                    dbHandler.updateCrime(crime_id, title, date_c.getTime(), solved ? 1 : 0);
+                }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), false).show();
+            }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
+
+        });
+
+        deleteCrime.setOnClickListener(v -> {
+            dbHandler.deleteCrime(title);
+            dbHandler.getCrimes();
+            finish();
+        });
     }
 }
