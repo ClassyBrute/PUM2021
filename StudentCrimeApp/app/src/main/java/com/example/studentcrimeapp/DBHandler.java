@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.Date;
+
 public class DBHandler extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
@@ -45,18 +47,11 @@ public class DBHandler extends SQLiteOpenHelper {
         return db.rawQuery(query, null);
     }
 
-    public Cursor getCrime(int id){
-        String query = "SELECT * FROM " + TABLE_CRIME +
-                " WHERE " + COLUMN_ID + " = " + id;
-        SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery(query, null);
-    }
-
     public void addCrimes(Crime crime){
         ContentValues values = new ContentValues();
         values.put(COLUMN_TITLE, crime.getTitle());
         values.put(COLUMN_SOLVED, crime.isSolved());
-        values.put(COLUMN_DATE, crime.getIntDate());
+        values.put(COLUMN_DATE, crime.getDate().getTime());
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -83,11 +78,13 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void updateCrime(int id, String title, int date, int solved){
+    public void updateCrime(int id, String title, Date date, int solved){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_TITLE, title);
-        contentValues.put(COLUMN_DATE, date);
+        if (date != null){
+            contentValues.put(COLUMN_DATE, date.getTime());
+        }
         contentValues.put(COLUMN_SOLVED, solved);
 
         db.update(TABLE_CRIME, contentValues,

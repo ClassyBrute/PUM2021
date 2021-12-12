@@ -1,7 +1,6 @@
 package com.example.studentcrimeapp;
 
 import java.util.Date;
-import java.util.UUID;
 
 public class Crime {
 
@@ -30,9 +29,6 @@ public class Crime {
     }
     public Date getDate() {
         return mDate;
-    }
-    public int getIntDate() {
-        return (int) mDate.getTime()/1000;
     }
 
     public void setId(int mId) { this.mId = mId; }

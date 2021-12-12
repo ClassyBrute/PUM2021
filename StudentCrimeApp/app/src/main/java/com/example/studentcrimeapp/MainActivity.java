@@ -5,24 +5,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageButton;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
-import java.util.LinkedList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton addCrime;
     private ImageButton deleteCrime;
     private ImageButton editCrime;
+    private SearchView searchView;
 
     private DBHandler dbHandler;
     private ArrayList<Crime> crimes = new ArrayList<>();
@@ -43,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
         deleteCrime = findViewById(R.id.delete);
         editCrime = findViewById(R.id.edit);
         recyclerView = findViewById(R.id.recycler_view);
+        searchView = findViewById(R.id.search_bar);
+        searchView.setQueryHint("Type to search...");
 
         dbHandler = new DBHandler(this);
 
@@ -58,12 +61,31 @@ public class MainActivity extends AppCompatActivity {
             recyclerView.getAdapter().notifyDataSetChanged();
         });
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                crimeAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
     }
 
     @Override
     protected void onDestroy() {
         dbHandler.close();
         super.onDestroy();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        getCrimes();
+        recyclerView.getAdapter().notifyDataSetChanged();
     }
 
     public void getCrimes() {
@@ -77,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 int id = cursor.getInt(0);
                 String title = cursor.getString(1);
                 boolean solved = (cursor.getInt(2) == 1);
-                Date date = new Date(cursor.getInt(3));
+                Date date = new Date(cursor.getLong(3));
 
                 crimes.add(new Crime(id, title, date, solved));
             }
@@ -85,19 +107,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addCrimes() {
-        String title = "New crime! " + crimes.size();
-        Date date = new Date();
+        String title = "New crime! ";
 
-        dbHandler.addCrimes(new Crime(title, date, false));
+        dbHandler.addCrimes(new Crime(title, new Date(), false));
     }
 
-    private class CrimeAdapter extends RecyclerView.Adapter<MainActivity.CrimeAdapter.CrimeViewHolder> {
+    private class CrimeAdapter extends RecyclerView.Adapter<MainActivity.CrimeAdapter.CrimeViewHolder> implements Filterable {
 
-        private Context context;
+        ArrayList<Crime> crimeList;
 
         // constructor
         public CrimeAdapter() {
-//            LayoutInflater inflater = LayoutInflater.from(context);
+            this.crimeList = new ArrayList<>(crimes);
         }
 
         private class CrimeViewHolder extends RecyclerView.ViewHolder {
@@ -112,21 +133,37 @@ public class MainActivity extends AppCompatActivity {
             private final TextView crimeSolved = itemView.findViewById(R.id.crime_solved);
             private final ImageButton deleteCrime = itemView.findViewById(R.id.delete);
             private final ImageButton editCrime = itemView.findViewById(R.id.edit);
+        }
 
-//        @Override
-//        public void onClick(View view) {
-//            int position = getLayoutPosition();
-////            Crime element = crimeList.get(position);
-//
-//            notifyDataSetChanged();
-//
-////            Intent intent = new Intent(inflater.getContext(), DetailActivity.class);
-//
-////            intent.putExtra("index", element.getIndex());
-////            intent.putExtra("position", position);
-//
-////            inflater.getContext().startActivity(intent);
-//        }
+        @Override
+        public Filter getFilter() {
+            return new Filter() {
+                @Override
+                protected FilterResults performFiltering(CharSequence constraint) {
+
+                    ArrayList<Crime> filtered = new ArrayList<>();
+
+                    if (constraint.toString().isEmpty())
+                        filtered.addAll(crimeList);
+                    else {
+                        for (Crime crime: crimeList){
+                            if (crime.getTitle().toLowerCase().contains(constraint.toString().toLowerCase()))
+                                filtered.add(crime);
+                        }
+                    }
+
+                    FilterResults filterResults = new FilterResults();
+                    filterResults.values = filtered;
+                    return filterResults;
+                }
+
+                @Override
+                protected void publishResults(final CharSequence constraint, FilterResults results) {
+                    crimes.clear();
+                    crimes.addAll((Collection<? extends Crime>) results.values);
+                    notifyDataSetChanged();
+                }
+            };
         }
 
         @NonNull
@@ -141,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
             Crime current = crimes.get(position);
             holder.crimeText.setText(current.getTitle());
             holder.crimeDate.setText(current.getDate().toString());
+
             if (current.isSolved()){
                 holder.crimeSolved.setText("Crime is solved");
             }
@@ -159,6 +197,9 @@ public class MainActivity extends AppCompatActivity {
 
                 intent.putExtra("id", element.getId());
                 intent.putExtra("position", position);
+                intent.putExtra("title", element.getTitle());
+                intent.putExtra("solved", element.isSolved());
+                intent.putExtra("date", element.getDate().toString());
 
                 startActivity(intent);
             });
