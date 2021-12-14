@@ -56,6 +56,7 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 dbHandler.updateCrime(crime_id, s.toString(), null, solved ? 1 : 0);
+                title = s.toString();
             }
 
             @Override

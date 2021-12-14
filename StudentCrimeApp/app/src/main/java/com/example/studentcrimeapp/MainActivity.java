@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton editCrime;
     private SearchView searchView;
 
+    CrimeAdapter crimeAdapter;
+
     private DBHandler dbHandler;
     private ArrayList<Crime> crimes = new ArrayList<>();
 
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         getCrimes();
 
-        CrimeAdapter crimeAdapter = new CrimeAdapter();
+        crimeAdapter = new CrimeAdapter();
         recyclerView.setAdapter(crimeAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -70,8 +72,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 crimeAdapter.getFilter().filter(newText);
+                crimeAdapter.updateCrimes(crimes);
+
                 return false;
             }
+        });
+
+        searchView.setOnCloseListener(() -> {
+            getCrimes();
+            recyclerView.getAdapter().notifyDataSetChanged();
+            return false;
         });
     }
 
@@ -110,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
         String title = "New crime! ";
 
         dbHandler.addCrimes(new Crime(title, new Date(), false));
+        getCrimes();
+        recyclerView.getAdapter().notifyDataSetChanged();
     }
 
     private class CrimeAdapter extends RecyclerView.Adapter<MainActivity.CrimeAdapter.CrimeViewHolder> implements Filterable {
@@ -125,7 +137,6 @@ public class MainActivity extends AppCompatActivity {
 
             public CrimeViewHolder(@NonNull View itemView) {
                 super(itemView);
-
             }
 
             private final TextView crimeText = itemView.findViewById(R.id.crime_text);
@@ -135,36 +146,43 @@ public class MainActivity extends AppCompatActivity {
             private final ImageButton editCrime = itemView.findViewById(R.id.edit);
         }
 
-        @Override
-        public Filter getFilter() {
-            return new Filter() {
-                @Override
-                protected FilterResults performFiltering(CharSequence constraint) {
-
-                    ArrayList<Crime> filtered = new ArrayList<>();
-
-                    if (constraint.toString().isEmpty())
-                        filtered.addAll(crimeList);
-                    else {
-                        for (Crime crime: crimeList){
-                            if (crime.getTitle().toLowerCase().contains(constraint.toString().toLowerCase()))
-                                filtered.add(crime);
-                        }
-                    }
-
-                    FilterResults filterResults = new FilterResults();
-                    filterResults.values = filtered;
-                    return filterResults;
-                }
-
-                @Override
-                protected void publishResults(final CharSequence constraint, FilterResults results) {
-                    crimes.clear();
-                    crimes.addAll((Collection<? extends Crime>) results.values);
-                    notifyDataSetChanged();
-                }
-            };
+        public void updateCrimes(ArrayList<Crime> crimesList){
+            crimeList = crimesList;
+            notifyDataSetChanged();
         }
+
+        @Override
+        public Filter getFilter(){
+            return filter;
+        }
+
+        Filter filter = new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+
+                ArrayList<Crime> filtered = new ArrayList<>();
+
+                if (constraint.toString().isEmpty())
+                    filtered.addAll(crimeList);
+                else {
+                    for (Crime crime: crimeList){
+                        if (crime.getTitle().toLowerCase().contains(constraint.toString().toLowerCase()))
+                            filtered.add(crime);
+                    }
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filtered;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(final CharSequence constraint, FilterResults results) {
+                crimes.clear();
+                crimes.addAll((Collection<? extends Crime>) results.values);
+                notifyDataSetChanged();
+            }
+        };
 
         @NonNull
         @Override
