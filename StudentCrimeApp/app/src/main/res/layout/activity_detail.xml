@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,24 +11,53 @@
         android:orientation="vertical"
         android:layout_marginHorizontal="10dp" >
 
-        <TextView
-            android:id="@+id/textView1"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="10dp"
-            android:textColor="@color/black"
-            android:text="TITLE" />
+            android:orientation="horizontal" >
 
-        <EditText
-            android:id="@+id/editTextTitle"
-            android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/image_view"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/teal_200"
+                android:minWidth="100dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="10dp"
+                    android:textColor="@color/black"
+                    android:text="TITLE" />
+
+                <EditText
+                    android:id="@+id/editTextTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="10dp"
+                    android:ems="10"
+                    android:hint="Enter a title for the crime."
+                    android:inputType="text"
+                    android:minHeight="48dp"
+                    android:text="" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/image_button"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="10dp"
-            android:ems="10"
-            android:hint="Enter a title for the crime."
-            android:inputType="text"
-            android:minHeight="48dp"
-            android:text="" />
+            android:minWidth="100dp"
+            android:minHeight="80dp"
+            android:src="@android:drawable/ic_menu_camera" />
 
         <TextView
             android:id="@+id/textView2"

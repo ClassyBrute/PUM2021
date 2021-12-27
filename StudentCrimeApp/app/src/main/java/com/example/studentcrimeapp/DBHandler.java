@@ -10,7 +10,7 @@ import java.util.Date;
 
 public class DBHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "crimesDB_JAVA.db";
 
     public static final String TABLE_CRIME = "crimes";
@@ -19,6 +19,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_TITLE = "title";
     public static final String COLUMN_DATE = "date";
     public static final String COLUMN_SOLVED = "solved";
+    public static final String COLUMN_IMAGE = "image";
 
     public DBHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -26,11 +27,13 @@ public class DBHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_CRIMES_TABLE = "CREATE TABLE " + TABLE_CRIME +
-                "(" + COLUMN_ID + " INTEGER PRIMARY KEY," +
+        String CREATE_CRIMES_TABLE =
+                "CREATE TABLE " + TABLE_CRIME + "(" +
+                COLUMN_ID + " INTEGER PRIMARY KEY," +
                 COLUMN_TITLE + " TEXT," +
                 COLUMN_SOLVED + " INTEGER," +
-                COLUMN_DATE + " INTEGER" + ")";
+                COLUMN_DATE + " INTEGER," +
+                COLUMN_IMAGE + " TEXT" + ")";
 
         db.execSQL(CREATE_CRIMES_TABLE);
     }
@@ -52,11 +55,26 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(COLUMN_TITLE, crime.getTitle());
         values.put(COLUMN_SOLVED, crime.isSolved());
         values.put(COLUMN_DATE, crime.getDate().getTime());
+        values.put(COLUMN_IMAGE, crime.getPicture());
 
         SQLiteDatabase db = this.getWritableDatabase();
 
         db.insert(TABLE_CRIME, null, values);
         db.close();
+    }
+
+    public long addCrimes1(Crime crime){
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_TITLE, crime.getTitle());
+        values.put(COLUMN_SOLVED, crime.isSolved());
+        values.put(COLUMN_DATE, crime.getDate().getTime());
+        values.put(COLUMN_IMAGE, crime.getPicture());
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        long result = db.insert(TABLE_CRIME, null, values);
+        db.close();
+        return result;
     }
 
     public void deleteCrime(String title){
@@ -78,7 +96,7 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void updateCrime(int id, String title, Date date, int solved){
+    public void updateCrime(int id, String title, Date date, int solved, String image){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_TITLE, title);
@@ -86,6 +104,7 @@ public class DBHandler extends SQLiteOpenHelper {
             contentValues.put(COLUMN_DATE, date.getTime());
         }
         contentValues.put(COLUMN_SOLVED, solved);
+        contentValues.put(COLUMN_IMAGE, image);
 
         db.update(TABLE_CRIME, contentValues,
                 COLUMN_ID + "=" + id, null);

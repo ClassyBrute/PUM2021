@@ -110,8 +110,9 @@ public class MainActivity extends AppCompatActivity {
                 String title = cursor.getString(1);
                 boolean solved = (cursor.getInt(2) == 1);
                 Date date = new Date(cursor.getLong(3));
+                String image = cursor.getString(4);
 
-                crimes.add(new Crime(id, title, date, solved));
+                crimes.add(new Crime(id, title, date, solved, image));
             }
         }
     }
@@ -119,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
     public void addCrimes() {
         String title = "New crime! ";
 
-        dbHandler.addCrimes(new Crime(title, new Date(), false));
+        dbHandler.addCrimes(new Crime(title, new Date(), false, ""));
         getCrimes();
         recyclerView.getAdapter().notifyDataSetChanged();
     }
@@ -218,6 +219,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("title", element.getTitle());
                 intent.putExtra("solved", element.isSolved());
                 intent.putExtra("date", element.getDate().toString());
+                intent.putExtra("image", element.getPicture());
 
                 startActivity(intent);
             });

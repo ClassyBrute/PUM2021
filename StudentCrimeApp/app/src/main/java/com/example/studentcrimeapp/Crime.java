@@ -8,20 +8,22 @@ public class Crime {
     private String mTitle;
     private Date mDate = new Date();
     private boolean mSolved;
+    private String mPicture;
 
     public Crime(){
 
     }
 
-    public Crime(int id, String mTitle, Date mDate, boolean mSolved){
-        this(mTitle, mDate, mSolved);
+    public Crime(int id, String mTitle, Date mDate, boolean mSolved, String mPicture){
+        this(mTitle, mDate, mSolved, mPicture);
         this.mId = id;
     }
 
-    public Crime(String mTitle, Date mDate, boolean mSolved){
+    public Crime(String mTitle, Date mDate, boolean mSolved, String mPicture){
         this.mTitle = mTitle;
         this.mDate = mDate;
         this.mSolved = mSolved;
+        this.mPicture = mPicture;
     }
 
     public void setDate(Date mDate) {
@@ -41,4 +43,6 @@ public class Crime {
 
     public void setTitle(String mTitle) { this.mTitle = mTitle; }
     public String getTitle() { return mTitle; }
+
+    public String getPicture() { return mPicture; }
 }
