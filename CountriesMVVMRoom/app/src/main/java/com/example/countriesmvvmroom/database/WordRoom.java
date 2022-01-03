@@ -61,12 +61,10 @@ public abstract class WordRoom extends RoomDatabase {
                 object.enqueue(new retrofit2.Callback<List<WordEntity>>() {
                     @Override
                     public void onResponse(Call<List<WordEntity>> call, Response<List<WordEntity>> response) {
-                        System.out.println("DUPA");
 
                         databaseWriteExecutor.execute(() -> {
                             WordDAO dao = INSTANCE.wordDAO();
                             dao.deleteAll();
-
 
                             for (WordEntity word : response.body()) {
                             WordEntity wordEntity = new WordEntity(word.getWord(), word.getCapital());
@@ -76,7 +74,6 @@ public abstract class WordRoom extends RoomDatabase {
 
                     @Override
                     public void onFailure (Call<List<WordEntity>> call, Throwable t){
-                        System.out.println("dupa");
                     }
                 });
         }
