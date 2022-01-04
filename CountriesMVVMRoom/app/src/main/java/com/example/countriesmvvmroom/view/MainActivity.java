@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 
 import com.example.countriesmvvmroom.R;
-import com.example.countriesmvvmroom.repository.WordRepository;
 import com.example.countriesmvvmroom.viewmodel.WordViewModel;
 
 public class MainActivity extends AppCompatActivity {
