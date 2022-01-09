@@ -1,13 +1,16 @@
 package com.example.wydatkiapp;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     private DBHandler dbHandler;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +41,12 @@ public class MainActivity extends AppCompatActivity {
         addExpense.setOnClickListener(v -> {
             addExpense(natalia_value.getText().toString(), hubert_value.getText().toString());
         });
+
+        showExpenses.setOnClickListener(v -> {
+            Intent intent = new Intent(this, RecyclerActivity.class);
+
+            this.startActivity(intent);
+        });
     }
 
     @Override
@@ -45,22 +55,30 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void addExpense(String natalia, String hubert) {
         if (!hubert.isEmpty()) {
             if (Integer.parseInt(hubert) > 0) {
-                dbHandler.addExpenses(new Expense("hubert", Integer.parseInt(hubert), new Date()));
+                dbHandler.addExpenses(new Expense("hubert", Integer.parseInt(hubert), LocalDate.now()));
                 Toast.makeText(this, "Dodano hubert, wartość: " +
                         Integer.parseInt(hubert) + "zł", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Wprowadź poprawne dane", Toast.LENGTH_SHORT).show();
             }
         }
 
         if (!natalia.isEmpty()){
             if (Integer.parseInt(natalia) > 0) {
-                dbHandler.addExpenses(new Expense("natalia", Integer.parseInt(natalia), new Date()));
+                dbHandler.addExpenses(new Expense("natalia", Integer.parseInt(natalia), LocalDate.now()));
                 Toast.makeText(this, "Dodano natalia, wartość: " +
                         Integer.parseInt(natalia) + "zł", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Wprowadź poprawne dane", Toast.LENGTH_SHORT).show();
             }
         }
 
+        if (natalia.isEmpty() && hubert.isEmpty()){
+            Toast.makeText(this, "Wprowadź poprawne dane", Toast.LENGTH_SHORT).show();
+        }
     }
 }

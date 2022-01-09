@@ -10,6 +10,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WydatkiApp">
         <activity
+            android:name=".RecyclerActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".DetailExpense"
+            android:exported="false"
+            android:parentActivityName=".RecyclerActivity" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

@@ -6,8 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.util.Date;
-
 public class DBHandler extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
@@ -52,7 +50,7 @@ public class DBHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COLUMN_OWNER, expense.getOwner());
         values.put(COLUMN_AMOUNT, expense.getAmount());
-        values.put(COLUMN_DATE, expense.getDate().getTime());
+        values.put(COLUMN_DATE, expense.getDate().toString());
 
         SQLiteDatabase db = this.getWritableDatabase();
 
