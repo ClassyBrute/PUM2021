@@ -5,6 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
+import java.time.LocalDate;
 
 public class DBHandler extends SQLiteOpenHelper {
 
@@ -42,6 +47,39 @@ public class DBHandler extends SQLiteOpenHelper {
 
     public Cursor getExpenses() {
         String query = "SELECT * FROM " + TABLE_EXPENSE;
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery(query, null);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public Cursor getExpensesDay() {
+        String query = "SELECT * FROM " + TABLE_EXPENSE +
+                " WHERE " + COLUMN_DATE + " BETWEEN " +
+                "\"" + LocalDate.now().minusDays(1) + "\"" + " AND " +
+                "\"" + LocalDate.now() + "\"";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery(query, null);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public Cursor getExpensesMonth() {
+        String query = "SELECT * FROM " + TABLE_EXPENSE +
+                " WHERE " + COLUMN_DATE + " BETWEEN " +
+                "\"" + LocalDate.now().minusMonths(1) + "\"" + " AND " +
+                "\"" + LocalDate.now() + "\"";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery(query, null);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public Cursor getExpensesYear() {
+        String query = "SELECT * FROM " + TABLE_EXPENSE +
+                " WHERE " + COLUMN_DATE + " BETWEEN " +
+                "\"" + LocalDate.now().minusYears(1) + "\"" + " AND " +
+                "\"" + LocalDate.now() + "\"";
+
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery(query, null);
     }

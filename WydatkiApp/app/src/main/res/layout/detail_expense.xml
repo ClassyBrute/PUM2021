@@ -2,44 +2,66 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingHorizontal="10dp"
+    android:layout_marginTop="10dp">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Date"/>
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:text="Data"/>
 
     <TextView
         android:id="@+id/detail_date"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:textSize="20sp"
+        android:textColor="@color/black"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Owner"/>
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:text="Płacący"/>
 
     <TextView
         android:id="@+id/detail_owner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:textSize="20sp"
+        android:textColor="@color/black"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Amount"/>
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:text="Cena"/>
 
     <EditText
         android:id="@+id/detail_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="numberPassword"
+        android:paddingBottom="10dp"
+        android:textSize="20sp"
+        android:textColor="@color/black"
         android:hint="edytuj ilość"/>
 
     <Button
         android:id="@+id/delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="delete expense"/>
+        android:textSize="20sp"
+        android:layout_gravity="center"
+        android:text="usuń wydatek"/>
 
 </LinearLayout>

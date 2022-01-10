@@ -2,6 +2,8 @@ package com.example.wydatkiapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -57,8 +59,19 @@ public class DetailExpense extends AppCompatActivity {
             finish();
         });
 
+        amount_.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    dbHandler.updateExpense(expense_id, Integer.parseInt(s.toString()));
+                }
+            }
 
+            @Override
+            public void afterTextChanged(Editable editable) { }
+        });
     }
-
 }
