@@ -1,12 +1,20 @@
 package com.example.wydatkiapp;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -22,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private Button showSummary;
 
     private DBHandler dbHandler;
+
+    private static final int STORAGE_PERMISSION_WRITE = 100;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -39,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         dbHandler = new DBHandler(this);
 
+        checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, STORAGE_PERMISSION_WRITE);
 
         addExpense.setOnClickListener(v -> {
             addExpense(natalia_value.getText().toString(), hubert_value.getText().toString());
@@ -46,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
 
         showExpenses.setOnClickListener(v -> {
             Intent intent = new Intent(this, RecyclerActivity.class);
-
             this.startActivity(intent);
         });
 
@@ -70,6 +80,49 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         dbHandler.close();
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+        builder.setTitle("CZY CHCESZ USUNĄĆ CAŁĄ BAZĘ DANYCH?")
+                .setPositiveButton("Tak", (dialogInterface, i) -> {
+                    SQLiteDatabase db = dbHandler.getWritableDatabase();
+                    db.execSQL("DELETE FROM expenses");
+                    Toast.makeText(MainActivity.this, "Usunięto", Toast.LENGTH_SHORT) .show();
+                })
+                .setNegativeButton("Nie", (dialogInterface, i) -> {
+                    dialogInterface.cancel();
+                });
+        builder.create().show();
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void checkPermission(String permission, int requestCode) {
+        if (ContextCompat.checkSelfPermission(MainActivity.this, permission) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[] { permission }, requestCode);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == STORAGE_PERMISSION_WRITE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(MainActivity.this, "Storage Write Permission Granted", Toast.LENGTH_SHORT) .show();
+            } else {
+                Toast.makeText(MainActivity.this, "Storage Write Permission Denied", Toast.LENGTH_SHORT) .show();
+            }
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

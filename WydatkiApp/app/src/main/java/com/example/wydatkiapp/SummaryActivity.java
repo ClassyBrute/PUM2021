@@ -4,14 +4,16 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -25,7 +27,6 @@ public class SummaryActivity extends AppCompatActivity {
     TextView hubert;
     TextView summary;
     Button save_gallery;
-    Button save_sms;
 
     int which;
     float hubert_value;
@@ -33,7 +34,6 @@ public class SummaryActivity extends AppCompatActivity {
     float sum;
 
     private final ArrayList<Expense> expenseList = new ArrayList<>();
-
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -46,8 +46,7 @@ public class SummaryActivity extends AppCompatActivity {
         natalia = findViewById(R.id.natalia_amount);
         hubert = findViewById(R.id.hubert_amount);
         summary = findViewById(R.id.summary);
-        save_gallery = findViewById(R.id.save_gallery);
-        save_sms = findViewById(R.id.save_sms);
+        save_gallery = findViewById(R.id.save_downloads);
 
         Locale l = Locale.ENGLISH;
 
@@ -59,13 +58,11 @@ public class SummaryActivity extends AppCompatActivity {
         for (Expense expense : expenseList) {
             if (expense.getOwner().equals("hubert")) {
                 hubert_value += expense.getAmount();
-                System.out.println(hubert_value);
             } else {
                 natalia_value += expense.getAmount();
             }
         }
 
-        System.out.println("przed sum");
         sum = (hubert_value + natalia_value)/2;
 
         hubert.setText(String.valueOf(hubert_value));
@@ -82,9 +79,52 @@ public class SummaryActivity extends AppCompatActivity {
         }
 
         save_gallery.setOnClickListener(v -> {
-//
+            exportCSV(which);
         });
+    }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void exportCSV(int case_) {
+        Cursor curCSV;
+
+        switch (case_) {
+            case 0:
+                curCSV = dbHandler.getExpensesDay();
+                break;
+            case 1:
+                curCSV = dbHandler.getExpensesMonth();
+                break;
+            case 2:
+                curCSV = dbHandler.getExpensesYear();
+                break;
+            default:
+                curCSV = dbHandler.getExpenses();
+                break;
+        }
+
+        File exportDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "");
+        if (!exportDir.exists()){
+            exportDir.mkdirs();
+        }
+
+        try {
+            File file = new File(exportDir, "wydatki.csv");
+            file.createNewFile();
+            CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
+            csvWrite.writeNext(curCSV.getColumnNames());
+
+            while (curCSV.moveToNext()) {
+                String[] arrStr = {curCSV.getString(0), curCSV.getString(1), curCSV.getString(2), curCSV.getString(3)};
+                csvWrite.writeNext(arrStr);
+            }
+            Toast.makeText(SummaryActivity.this, "Sukces", Toast.LENGTH_SHORT).show();
+
+            csvWrite.close();
+            curCSV.close();
+        } catch (Exception sqlEx) {
+            System.out.println(sqlEx);
+            Toast.makeText(SummaryActivity.this, "Nie udało się", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -118,6 +158,8 @@ public class SummaryActivity extends AppCompatActivity {
 
                 expenseList.add(new Expense(id, owner, amount, date));
             }
+            cursor.close();
+            dbHandler.close();
         }
     }
 }
