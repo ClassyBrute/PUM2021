@@ -1,0 +1,21 @@
+Wydatki App - Programowanie Urządzeń Mobilnych wykład
+
+Pomysł:
+Założeniem projektu było stworzenie aplikacji śledzącej 
+wydatki dwóch osób i podsumowanie ich.
+
+Zakładane funkcjonalności:
+- Zastosowanie CRUD 
+- Zapisywanie wydatków do bazy danych
+- Podsumowanie wydatków po naciśnięciu przycisku
+
+Co udało się zrobić:
+- Dodawanie nowych wydatków, zapisywane są do bazy danych
+- Wyświetlanie wszystkich wydatków w RecyclerView
+- Edycja/usuwanie poszczególnych wydatków
+- Podsumowanie dzienne/miesięczne/roczne
+- Podliczenie wspólnych wydatków
+- Wykorzystanie request permissions
+- Możliwość zapisania podsumowania dnia/miesiąca/roku do pliku .csv
+
+
