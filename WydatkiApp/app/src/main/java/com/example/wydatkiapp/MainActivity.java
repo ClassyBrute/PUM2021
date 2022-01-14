@@ -4,9 +4,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.Button;
@@ -14,8 +12,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,8 +22,6 @@ public class MainActivity extends AppCompatActivity {
     private Button showSummary;
 
     private DBHandler dbHandler;
-
-    ArrayList<Expense> expenseList = new ArrayList<>();
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -63,7 +57,9 @@ public class MainActivity extends AppCompatActivity {
 
             builder.setTitle("Wybierz zakres podsumowania")
                     .setItems(lista, (dialog, which) -> {
-                        getExpenses(which);
+                        Intent intent = new Intent(this, SummaryActivity.class);
+                        intent.putExtra("which", which);
+                        this.startActivity(intent);
                     });
 
             builder.create().show();
@@ -74,40 +70,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         dbHandler.close();
         super.onDestroy();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void getExpenses(int case_) {
-        expenseList.clear();
-        Cursor cursor;
-
-        switch (case_) {
-            case 0:
-                cursor = dbHandler.getExpensesDay();
-                break;
-            case 1:
-                cursor = dbHandler.getExpensesMonth();
-                break;
-            case 2:
-                cursor = dbHandler.getExpensesYear();
-                break;
-            default:
-                cursor = dbHandler.getExpensesMonth();
-                break;
-        }
-
-        if (cursor.getCount() == 0)
-            Toast.makeText(this, "EMPTY", Toast.LENGTH_SHORT).show();
-        else {
-            while (cursor.moveToNext()){
-                int id = cursor.getInt(0);
-                String owner = cursor.getString(1);
-                int amount = cursor.getInt(2);
-                LocalDate date = LocalDate.parse(cursor.getString(3));
-
-                expenseList.add(new Expense(id, owner, amount, date));
-            }
-        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

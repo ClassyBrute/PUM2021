@@ -44,6 +44,7 @@
                 android:textColor="@color/black"/>
 
             <TextView
+                android:id="@+id/natalia_amount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="amount"
@@ -69,6 +70,7 @@
                 android:textColor="@color/black"/>
 
             <TextView
+                android:id="@+id/hubert_amount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="amount"
@@ -80,9 +82,13 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/summary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="kto komu ile"
+        android:textSize="30sp"
+        android:textColor="@color/black"
+        android:paddingVertical="15dp"
         android:gravity="center">
 
     </TextView>
