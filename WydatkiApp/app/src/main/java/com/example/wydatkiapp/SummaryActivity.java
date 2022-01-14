@@ -117,7 +117,7 @@ public class SummaryActivity extends AppCompatActivity {
                 String[] arrStr = {curCSV.getString(0), curCSV.getString(1), curCSV.getString(2), curCSV.getString(3)};
                 csvWrite.writeNext(arrStr);
             }
-            Toast.makeText(SummaryActivity.this, "Sukces", Toast.LENGTH_SHORT).show();
+            Toast.makeText(SummaryActivity.this, "Zapisano do DOWNLOADS", Toast.LENGTH_SHORT).show();
 
             csvWrite.close();
             curCSV.close();
