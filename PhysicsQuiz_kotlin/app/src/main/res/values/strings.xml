@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">PhysicsQuiz_kotlin</string>
+
+    <string name="trueString">TRUE</string>
+    <string name="falseString">FALSE</string>
+    <string name="next">NEXT</string>
+    <string name="previous">PREVIOUS</string>
+    <string name="correct_answer">CORRECT</string>
+    <string name="incorrect_answer">INCORRECT</string>
+    <string name="restart">RESTART</string>
+    <string name="cheat">CHEAT</string>
+
+    <string name="question1">1. 1km to 1000m</string>
+    <string name="question2">2. Ziemia obraca sie wokol wlasnej osi</string>
+    <string name="question3">3. Dzień na Ziemi trwa 25h</string>
+    <string name="question4">4. Kopernik był Hiszpanem</string>
+    <string name="question5">5. Einstein był Polakiem</string>
+    <string name="question6">6. Kąt załamania rowna sie katowi odbicia</string>
+    <string name="question7">7. Ziemia ma więcej niż 2000 lat</string>
+    <string name="question8">8. Nikola Tesla był fizykiem</string>
+
+</resources>
